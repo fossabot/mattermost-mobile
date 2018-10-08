@@ -19,6 +19,7 @@ import {
     app,
     store,
 } from 'app/mattermost';
+
 import {loadFromPushNotification} from 'app/actions/views/root';
 import {ViewTypes} from 'app/constants';
 import PushNotifications from 'app/push_notifications';
@@ -30,6 +31,7 @@ import EmptyToolbar from 'app/components/start/empty_toolbar';
 import Loading from 'app/components/loading';
 import SafeAreaView from 'app/components/safe_area_view';
 import StatusBar from 'app/components/status_bar';
+import {showTermsOfServiceModal} from 'app/utils/general';
 
 const lazyLoadSelectServer = () => {
     return require('app/screens/select_server').default;
@@ -52,6 +54,7 @@ const lazyLoadReplyPushNotifications = () => {
  * With very little overhead navigate to
  *  - Login or
  *  - Channel Component
+ *  And show Terms of Service Modal, if necessary.
  *
  * The idea is to render something to the user as soon as possible
  */
@@ -60,6 +63,7 @@ export default class Entry extends PureComponent {
         theme: PropTypes.object,
         navigator: PropTypes.object,
         isLandscape: PropTypes.bool,
+        showTermsOfService: PropTypes.bool,
         enableTimezone: PropTypes.bool,
         deviceTimezone: PropTypes.string,
         initializeModules: PropTypes.func,
@@ -101,6 +105,10 @@ export default class Entry extends PureComponent {
 
     handleLaunchChannel = (initializeModules) => {
         this.setState({launchChannel: true});
+
+        if (this.props.showTermsOfService) {
+            showTermsOfServiceModal(this.props.navigator, this.props.theme);
+        }
 
         if (initializeModules) {
             this.props.initializeModules();

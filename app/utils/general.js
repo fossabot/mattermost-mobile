@@ -2,6 +2,7 @@
 // See LICENSE.txt for license information.
 
 import {Alert} from 'react-native';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {Posts} from 'mattermost-redux/constants';
 
 export function fromAutoResponder(post) {
@@ -47,6 +48,27 @@ export function alertErrorIfInvalidPermissions(result) {
 export function emptyFunction() {
     return;
 }
+
+export const showTermsOfServiceModal = (navigator, theme) => {
+    MaterialIcon.getImageSource('close', 20, theme.sidebarHeaderTextColor).then((source) => {
+        navigator.showModal({
+            screen: 'TermsOfService',
+            animationType: 'slide-up',
+            title: '',
+            backButtonTitle: '',
+            animated: true,
+            navigatorStyle: {
+                navBarTextColor: theme.centerChannelColor,
+                navBarBackgroundColor: theme.centerChannelBg,
+                navBarButtonColor: theme.buttonBg,
+                screenBackgroundColor: theme.buttonColor,
+            },
+            passProps: {
+                closeButton: source,
+            },
+        });
+    });
+};
 
 export function throttle(fn, limit, ...args) {
     let inThrottle;
