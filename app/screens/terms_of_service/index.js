@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import {logout} from 'mattermost-redux/actions/users';
 import {getTheme} from 'mattermost-redux/selectors/entities/preferences';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {isLandscape} from 'app/selectors/device';
 
 import TermsOfService from './terms_of_service.js';
 
@@ -14,6 +15,7 @@ function mapStateToProps(state) {
     const config = getConfig(state);
 
     return {
+        isLandscape: isLandscape(state),
         siteName: config.SiteName,
         termsEnabled: config.EnableCustomTermsOfService === 'true',
         theme: getTheme(state),

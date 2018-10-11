@@ -5,18 +5,36 @@ import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {
     Alert,
+    Animated,
     InteractionManager,
+    Platform,
     ScrollView,
+    Text,
+    View,
 } from 'react-native';
 import {intlShape} from 'react-intl';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 import {getTermsOfService, updateTermsOfServiceStatus} from 'app/actions/views/terms_of_service';
 
 import Loading from 'app/components/loading';
 import Markdown from 'app/components/markdown';
 import StatusBar from 'app/components/status_bar';
+
+import {ViewTypes} from 'app/constants';
+
 import {getMarkdownTextStyles, getMarkdownBlockStyles} from 'app/utils/markdown';
 import {changeOpacity, makeStyleSheetFromTheme, setNavigatorStyles} from 'app/utils/theme';
+
+const HEIGHT = 38;
+const {
+    ANDROID_TOP_LANDSCAPE,
+    ANDROID_TOP_PORTRAIT,
+    IOS_TOP_LANDSCAPE,
+    IOS_TOP_PORTRAIT,
+    IOSX_TOP_PORTRAIT,
+    STATUS_BAR_HEIGHT,
+} = ViewTypes;
 
 export default class TermsOfService extends PureComponent {
     static propTypes = {
@@ -24,6 +42,7 @@ export default class TermsOfService extends PureComponent {
             logout: PropTypes.func.isRequired,
         }),
         closeButton: PropTypes.object,
+        isLandscape: PropTypes.bool,
         navigator: PropTypes.object,
         siteName: PropTypes.string,
         termsEnabled: PropTypes.bool,
@@ -50,6 +69,7 @@ export default class TermsOfService extends PureComponent {
 
     constructor(props, context) {
         super(props);
+        const navBar = this.getNavBarHeight(props.isLandscape);
 
         this.state = {
             error: null,
@@ -57,6 +77,7 @@ export default class TermsOfService extends PureComponent {
             serverError: null,
             termsId: '',
             termsText: '',
+            top: new Animated.Value(navBar - HEIGHT),
         };
 
         this.rightButton.title = context.intl.formatMessage({id: 'terms_of_service.agreeButton', defaultMessage: 'I Agree'});
@@ -69,6 +90,38 @@ export default class TermsOfService extends PureComponent {
     componentDidMount() {
         this.getTerms();
     }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.theme !== nextProps.theme) {
+            setNavigatorStyles(this.props.navigator, nextProps.theme);
+        }
+
+        if (nextProps.isLandscape !== this.props.isLandscape) {
+            const navBar = this.getNavBarHeight(nextProps.isLandscape);
+            const top = new Animated.Value(navBar - HEIGHT);
+            this.setLocalState({navBar, top});
+        }
+    }
+
+    getNavBarHeight = (isLandscape) => {
+        if (Platform.OS === 'android') {
+            if (isLandscape) {
+                return ANDROID_TOP_LANDSCAPE;
+            }
+
+            return ANDROID_TOP_PORTRAIT;
+        }
+
+        if (this.isX && isLandscape) {
+            return IOS_TOP_LANDSCAPE;
+        } else if (this.isX) {
+            return IOSX_TOP_PORTRAIT;
+        } else if (isLandscape) {
+            return IOS_TOP_LANDSCAPE + STATUS_BAR_HEIGHT;
+        }
+
+        return IOS_TOP_PORTRAIT;
+    };
 
     setNavigatorButtons = (enabled = true) => {
         const buttons = {
@@ -148,13 +201,6 @@ export default class TermsOfService extends PureComponent {
         );
     };
 
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.theme !== nextProps.theme) {
-            setNavigatorStyles(this.props.navigator, nextProps.theme);
-        }
-    }
-
     onNavigatorEvent = (event) => {
         if (event.type === 'NavBarButtonPress') {
             switch (event.id) {
@@ -180,20 +226,39 @@ export default class TermsOfService extends PureComponent {
             return <Loading/>;
         }
 
+        const background = this.backgroundColor.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['#939393', '#629a41'],
+        });
+
         return (
-            <ScrollView
-                style={styles.scrollView}
-                contentContainerStyle={styles.scrollViewContent}
-            >
+            <React.Fragment>
+                <Animated.View style={[styles.container, {top: 0, backgroundColor: background}]}>
+                    <Animated.View style={styles.wrapper}>
+                        <Text>{'Hello World'}</Text>
+                        <View style={styles.actionContainer}>
+                            <IonIcon
+                                color='#FFFFFF'
+                                name='md-checkmark'
+                                size={20}
+                            />
+                        </View>
+                    </Animated.View>
+                </Animated.View>
                 <StatusBar/>
-                <Markdown
-                    baseTextStyle={styles.baseText}
-                    navigator={navigator}
-                    textStyles={textStyles}
-                    blockStyles={blockStyles}
-                    value={(this.state.termsText || '')}
-                />
-            </ScrollView>
+                <ScrollView
+                    style={styles.scrollView}
+                    contentContainerStyle={styles.scrollViewContent}
+                >
+                    <Markdown
+                        baseTextStyle={styles.baseText}
+                        navigator={navigator}
+                        textStyles={textStyles}
+                        blockStyles={blockStyles}
+                        value={(this.state.termsText || '')}
+                    />
+                </ScrollView>
+            </React.Fragment>
         );
     }
 }
@@ -217,6 +282,40 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         },
         scrollViewContent: {
             paddingBottom: 50,
+        },
+
+
+        container: {
+            height: HEIGHT,
+            width: '100%',
+            zIndex: 9,
+            position: 'absolute',
+        },
+        wrapper: {
+            alignItems: 'center',
+            flex: 1,
+            height: HEIGHT,
+            flexDirection: 'row',
+            paddingLeft: 12,
+            paddingRight: 5,
+        },
+        message: {
+            color: '#FFFFFF',
+            fontSize: 14,
+            fontWeight: '600',
+            flex: 1,
+        },
+        actionButton: {
+            alignItems: 'center',
+            borderWidth: 1,
+            borderColor: '#FFFFFF',
+        },
+        actionContainer: {
+            alignItems: 'flex-end',
+            height: 24,
+            justifyContent: 'center',
+            paddingRight: 10,
+            width: 60,
         },
     };
 });
