@@ -14,11 +14,11 @@ function mapStateToProps(state) {
     const {announcement} = state.views;
 
     return {
-        bannerColor: config.BannerColor,
-        bannerDismissed: config.BannerText === announcement,
-        bannerEnabled: config.EnableBanner === 'true' && license.IsLicensed === 'true',
-        bannerText: config.BannerText,
-        bannerTextColor: config.BannerTextColor || '#000',
+        bannerColor: 'red',
+        // bannerDismissed: config.BannerText === announcement,
+        bannerEnabled: true,
+        // bannerText: config.BannerText,
+        bannerTextColor: '#000',
         theme: getTheme(state),
     };
 }
