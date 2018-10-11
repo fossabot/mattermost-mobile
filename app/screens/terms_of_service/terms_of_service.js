@@ -10,10 +10,11 @@ import {
 } from 'react-native';
 import {intlShape} from 'react-intl';
 
-import {getTermsOfService} from 'app/actions/views/terms_of_service';
+import {getTermsOfService, updateTermsOfServiceStatus} from 'app/actions/views/terms_of_service';
 
 import Loading from 'app/components/loading';
 import Markdown from 'app/components/markdown';
+import StatusBar from 'app/components/status_bar';
 import {getMarkdownTextStyles, getMarkdownBlockStyles} from 'app/utils/markdown';
 import {changeOpacity, makeStyleSheetFromTheme, setNavigatorStyles} from 'app/utils/theme';
 
@@ -24,6 +25,7 @@ export default class TermsOfService extends PureComponent {
         }),
         closeButton: PropTypes.object,
         navigator: PropTypes.object,
+        siteName: PropTypes.string,
         termsEnabled: PropTypes.bool,
         theme: PropTypes.object,
     };
@@ -33,6 +35,7 @@ export default class TermsOfService extends PureComponent {
     };
 
     static defaultProps = {
+        siteName: 'Mattermost',
         termsEnabled: true,
     };
 
@@ -51,8 +54,6 @@ export default class TermsOfService extends PureComponent {
         this.state = {
             error: null,
             loading: true,
-            loadingAgree: false,
-            loadingDisagree: false,
             serverError: null,
             termsId: '',
             termsText: '',
@@ -61,18 +62,22 @@ export default class TermsOfService extends PureComponent {
         this.rightButton.title = context.intl.formatMessage({id: 'terms_of_service.agreeButton', defaultMessage: 'I Agree'});
         this.leftButton.icon = props.closeButton;
 
-        const buttons = {
-            leftButtons: [this.leftButton],
-            rightButtons: [this.rightButton],
-        };
-
         props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
-        props.navigator.setButtons(buttons);
+        this.setNavigatorButtons();
     }
 
     componentDidMount() {
         this.getTerms();
     }
+
+    setNavigatorButtons = (enabled = true) => {
+        const buttons = {
+            leftButtons: [{...this.leftButton, disabled: !enabled}],
+            rightButtons: [{...this.rightButton, disabled: !enabled}],
+        };
+
+        this.props.navigator.setButtons(buttons);
+    };
 
     getTerms = () => {
         this.setState({
@@ -99,29 +104,66 @@ export default class TermsOfService extends PureComponent {
         );
     };
 
+    handleAcceptTerms = () => {
+        this.setNavigatorButtons(false);
+        this.registerUserAction(
+            true,
+            () => {
+                this.setNavigatorButtons(true);
+                this.props.navigator.dismissModal({
+                    animationType: 'slide-down',
+                });
+            }
+        );
+    };
+
+    handleRejectTerms = () => {
+        const {logout} = this.props.actions;
+        this.setNavigatorButtons(false);
+        this.registerUserAction(
+            false,
+            () => {
+                this.setNavigatorButtons(true);
+                this.props.navigator.dismissAllModals();
+                InteractionManager.runAfterInteractions(logout);
+            }
+        );
+    };
+
+    registerUserAction = (accepted, success) => {
+        this.setState({
+            loading: true,
+        });
+        updateTermsOfServiceStatus(
+            this.state.termsId,
+            accepted,
+            success,
+            () => {
+                this.setNavigatorButtons(true);
+                this.setState({
+                    loading: false,
+                });
+                // TODO: Show Error
+            },
+        );
+    };
+
+
     componentWillReceiveProps(nextProps) {
         if (this.props.theme !== nextProps.theme) {
             setNavigatorStyles(this.props.navigator, nextProps.theme);
         }
     }
 
-    close = () => {
-        this.props.navigator.dismissModal({
-            animationType: 'slide-down',
-        });
-    };
-
     onNavigatorEvent = (event) => {
         if (event.type === 'NavBarButtonPress') {
-            const {logout} = this.props.actions;
             switch (event.id) {
             case 'close-terms-of-service':
-                this.props.navigator.dismissAllModals();
-                InteractionManager.runAfterInteractions(logout);
+                this.handleRejectTerms();
                 break;
 
             case 'accept-terms-of-service':
-                this.close();
+                this.handleAcceptTerms();
                 break;
             }
         }
@@ -143,6 +185,7 @@ export default class TermsOfService extends PureComponent {
                 style={styles.scrollView}
                 contentContainerStyle={styles.scrollViewContent}
             >
+                <StatusBar/>
                 <Markdown
                     baseTextStyle={styles.baseText}
                     navigator={navigator}

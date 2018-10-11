@@ -14,6 +14,7 @@ function mapStateToProps(state) {
     const config = getConfig(state);
 
     return {
+        siteName: config.SiteName,
         termsEnabled: config.EnableCustomTermsOfService === 'true',
         theme: getTheme(state),
     };
