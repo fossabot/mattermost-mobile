@@ -113,7 +113,7 @@ export default class AnnouncementBanner extends PureComponent {
                         numberOfLines={1}
                         style={[style.bannerText, bannerTextStyle]}
                     >
-                        <RemoveMarkdown value={bannerText}/>
+                        {'Hello World!'}
                     </Text>
                     <MaterialIcons
                         color={bannerTextColor}
