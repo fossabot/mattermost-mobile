@@ -143,11 +143,11 @@ export default class TermsOfService extends PureComponent {
                 this.setState({
                     loading: false,
                 });
+
                 // TODO: Show Error
             },
         );
     };
-
 
     componentWillReceiveProps(nextProps) {
         if (this.props.theme !== nextProps.theme) {
@@ -181,19 +181,21 @@ export default class TermsOfService extends PureComponent {
         }
 
         return (
-            <ScrollView
-                style={styles.scrollView}
-                contentContainerStyle={styles.scrollViewContent}
-            >
+            <React.Fragment>
                 <StatusBar/>
-                <Markdown
-                    baseTextStyle={styles.baseText}
-                    navigator={navigator}
-                    textStyles={textStyles}
-                    blockStyles={blockStyles}
-                    value={(this.state.termsText || '')}
-                />
-            </ScrollView>
+                <ScrollView
+                    style={styles.scrollView}
+                    contentContainerStyle={styles.scrollViewContent}
+                >
+                    <Markdown
+                        baseTextStyle={styles.baseText}
+                        navigator={navigator}
+                        textStyles={textStyles}
+                        blockStyles={blockStyles}
+                        value={(this.state.termsText || '')}
+                    />
+                </ScrollView>
+            </React.Fragment>
         );
     }
 }

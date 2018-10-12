@@ -50,7 +50,7 @@ export function emptyFunction() {
 }
 
 export const showTermsOfServiceModal = (navigator, theme) => {
-     MaterialIcon.getImageSource(Platform.OS === 'ios' ? 'chevron-left' : 'arrow-back', Platform.OS === 'ios' ? 32 : 20, theme.sidebarHeaderTextColor).then((source) => {
+    MaterialIcon.getImageSource(Platform.OS === 'ios' ? 'chevron-left' : 'arrow-back', Platform.OS === 'ios' ? 32 : 20, theme.sidebarHeaderTextColor).then((source) => {
         navigator.showModal({
             screen: 'TermsOfService',
             animationType: 'slide-up',
