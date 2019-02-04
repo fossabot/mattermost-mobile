@@ -10,7 +10,7 @@ import {Client4} from 'mattermost-redux/client';
 import mattermostBucket from 'app/mattermost_bucket';
 import LocalConfig from 'assets/config';
 
-const PING_TIMEOUT = 3000;
+const PING_TIMEOUT = 60000;
 
 let certificate = '';
 let previousState;
