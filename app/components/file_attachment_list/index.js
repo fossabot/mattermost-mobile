@@ -13,12 +13,14 @@ import {getDimensions} from 'app/selectors/device';
 
 import FileAttachmentList from './file_attachment_list';
 
+import LocalConfig from 'assets/config';
+
 function makeMapStateToProps() {
     const getFilesForPost = makeGetFilesForPost();
     return function mapStateToProps(state, ownProps) {
         return {
             ...getDimensions(state),
-            canDownloadFiles: canDownloadFilesOnMobile(state),
+            canDownloadFiles: canDownloadFilesOnMobile(state) && LocalConfig.EnableDownloadFiles,
             files: getFilesForPost(state, ownProps.postId),
             theme: getTheme(state),
         };
