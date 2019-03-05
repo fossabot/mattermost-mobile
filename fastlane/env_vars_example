@@ -38,7 +38,7 @@ export MATCH_KEYCHAIN_PASSWORD=
 
 ############ PILOT (Used to upload the ipa to TestFlight and from there you can submit to the store) ############
 # Your Apple ID Username
-export PILOT_USERNAME=
+export PILOT_USERNAME=harshil.sharma@brightscout.com
 
 # Don't wait for the build to process.
 export PILOT_SKIP_WAITING_FOR_BUILD_PROCESSING=true
