@@ -2,6 +2,7 @@
 // See LICENSE.txt for license information.
 
 import React, {PureComponent} from 'react';
+import {DeviceInfo} from 'react-native';
 import PropTypes from 'prop-types';
 import {injectIntl, intlShape} from 'react-intl';
 import {
@@ -211,6 +212,7 @@ class SSO extends PureComponent {
         } else {
             content = (
                 <WebView
+                    userAgent={DeviceInfo.getUserAgent() + " - Mattermost - android "}
                     ref={this.webViewRef}
                     source={{uri: this.loginUrl, headers: HEADERS}}
                     javaScriptEnabledAndroid={true}

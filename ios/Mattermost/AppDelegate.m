@@ -22,6 +22,15 @@
 
 @implementation AppDelegate
 
+NSString *deviceType = [UIDevice currentDevice].model;
+UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+NSString *oldAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+NSString *newAgent = [oldAgent stringByAppendingString:@" Mattermost - iOS - "];
+newAgent = [newAgent stringByAppendingString:deviceType];
+
+NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys:newAgent, @"UserAgent", nil];
+[[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+
 NSString* const NOTIFICATION_MESSAGE_ACTION = @"message";
 NSString* const NOTIFICATION_CLEAR_ACTION = @"clear";
 NSString* const NOTIFICATION_UPDATE_BADGE_ACTION = @"update_badge";
