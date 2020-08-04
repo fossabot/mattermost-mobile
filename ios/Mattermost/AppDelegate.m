@@ -34,13 +34,8 @@ NSString* const NOTIFICATION_UPDATE_BADGE_ACTION = @"update_badge";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  NSString *deviceType = [UIDevice currentDevice].model;
-  UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
-  NSString *oldAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
-  NSString *newAgent = [oldAgent stringByAppendingString:@" Mattermost - iOS - "];
-  newAgent = [newAgent stringByAppendingString:deviceType];
-
-  NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys:newAgent, @"UserAgent", nil];
+  NSString *userAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217";
+  NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys:userAgent, @"UserAgent", nil];
   [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
 
   // Clear keychain on first run in case of reinstallation
