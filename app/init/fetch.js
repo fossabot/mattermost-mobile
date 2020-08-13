@@ -2,7 +2,8 @@
 // See LICENSE.txt for license information.
 
 import {Platform} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
+
+// import DeviceInfo from 'react-native-device-info';
 import RNFetchBlob from 'rn-fetch-blob';
 import urlParse from 'url-parse';
 
@@ -156,8 +157,8 @@ const initFetchConfig = async () => {
         // no managed config
     }
 
-    const userAgent = await DeviceInfo.getUserAgent();
-    Client4.setUserAgent(userAgent);
+    // const userAgent = await DeviceInfo.getUserAgent();
+    Client4.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148');
 
     if (Platform.OS === 'ios') {
         fetchConfig.certificate = await mattermostBucket.getPreference('cert');
