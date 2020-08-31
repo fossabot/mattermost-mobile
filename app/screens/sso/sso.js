@@ -209,10 +209,15 @@ class SSO extends PureComponent {
                 </View>
             );
         } else {
+            const extraOpts = {};
+            if (Platform.OS === 'ios' && Platform.isPad) {
+                extraOpts.userAgent = 'Mozilla/5.0 (iPad; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148';
+            }
+
             content = (
                 <WebView
+                    {...extraOpts}
                     ref={this.webViewRef}
-                    userAgent={'Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'}
                     source={{uri: this.loginUrl, headers: HEADERS}}
                     javaScriptEnabledAndroid={true}
                     automaticallyAdjustContentInsets={false}
