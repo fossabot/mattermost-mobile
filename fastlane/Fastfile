@@ -320,6 +320,8 @@ platform :ios do
   lane :build do
     unless configured
       configure
+      set_app_version
+      set_app_build_number
     end
     update_identifiers
     replace_assets
@@ -542,6 +544,8 @@ platform :android do
   lane :build do
     unless configured
       configure
+      set_app_version
+      set_app_build_number
     end
     configure_telemetry_android
     update_identifiers
