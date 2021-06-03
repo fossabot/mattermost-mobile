@@ -1,4 +1,6 @@
 # Mattermost Mobile
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FBrightscout%2Fmattermost-mobile.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FBrightscout%2Fmattermost-mobile?ref=badge_shield)
+
 
 - **Minimum Server versions:** Current ESR version (5.31.3)
 - **Supported iOS versions:** 11+
@@ -76,3 +78,7 @@ If your app is working properly, you should see a grey “Connecting…” bar t
 If you are seeing this message all the time, and your internet connection seems fine: 
 
 Ask your server administrator if the server uses NGINX or another webserver as a reverse proxy. If so, they should check that it is configured correctly for [supporting the websocket connection for APIv4 endpoints](https://docs.mattermost.com/install/install-ubuntu-1604.html#configuring-nginx-as-a-proxy-for-mattermost-server). 
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FBrightscout%2Fmattermost-mobile.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FBrightscout%2Fmattermost-mobile?ref=badge_large)
